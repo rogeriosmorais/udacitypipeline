@@ -9,7 +9,7 @@ stages:
     environment:
       name:  ENVIRONMENT NAME
       resourceType: VirtualMachine
-      tags: TAG NAME
+      tags: VM
     strategy:
       runOnce:
         deploy:
