@@ -2,6 +2,19 @@ name: Azure Pipelines
 variables:
   python.version: '3.7.6'
 stages:
+- stage: Build
+  jobs:
+  - job: Build
+    pool:
+      name: Hosted Ubuntu 1604
+    steps:    
+    - task: ArchiveFiles@2
+      displayName: 'Archive FakeRestAPI'
+      inputs:
+        rootFolderOrFile: 'path/to/fakerestapi'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
 - stage: Deploy
   jobs:
   - deployment: FakeRestAPI
