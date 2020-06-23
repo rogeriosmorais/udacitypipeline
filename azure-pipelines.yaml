@@ -39,8 +39,7 @@ stages:
     displayName: 'Deploy VM'
     environment:
       name:  'udacity'
-      resourceType: VirtualMachine
-      tags: 'udacity'
+      resourceType: VirtualMachine      
     strategy:
       runOnce:
         deploy:
