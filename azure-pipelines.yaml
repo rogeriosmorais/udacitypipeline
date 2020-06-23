@@ -125,14 +125,17 @@ stages:
       inputs:
         testResultsFiles: '$(System.DefaultWorkingDirectory)\Results\*.xml'
 
-  - deployment: SeleniumTests
-    environment: UdacityEnv
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - script:
-              python selenium_tests.py
+  - job: SeleniumTests
+    pool:
+      vmImage: 'Ubuntu-16.04'    
+    steps:
+    - script:
+        pip install selenium    
+        npm install chromedriver     
+    
+      displayName: 'Install selenium'
+    - script:
+        python selenium_tests.py > selenium_logs.txt
 
-            displayName: 'Run tests'
-            workingDirectory: '$(Build.SourcesDirectory)'
+      displayName: 'Run tests'
+      workingDirectory: '$(System.DefaultWorkingDirectory)'
