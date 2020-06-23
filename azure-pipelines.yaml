@@ -108,26 +108,33 @@ stages:
 
 - stage: Testing
   jobs:
-  - job: PostmanTests
+  - deployment: PostmanTests
     environment: UdacityEnv
-    steps:
-    - script: 'npm install newman'
-      workingDirectory: '$(System.DefaultWorkingDirectory)'
-      displayName: 'Install newman'
-    - script: |
-       newman run "Regresssion Test Suite.postman_collection.json" -e "Production.postman_environment.json" --reporters cli,junit --reporter-junit-export Results\junitReport.xml
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - script: 'npm install newman'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+            displayName: 'Install newman'
+          - script: |
+             newman run "Regresssion Test Suite.postman_collection.json" -e "Production.postman_environment.json" --reporters cli,junit --reporter-junit-export Results\junitReport.xml
 
-      workingDirectory: '$(System.DefaultWorkingDirectory)'
-      displayName: 'Run API tests'
-      continueOnError: true
-    - task: PublishTestResults@1
-      displayName: 'Publish Test Results'
-      inputs:
-        testResultsFiles: '$(System.DefaultWorkingDirectory)\Results\*.xml'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+            displayName: 'Run API tests'
+            continueOnError: true
+          - task: PublishTestResults@1
+            displayName: 'Publish Test Results'
+            inputs:
+              testResultsFiles: '$(System.DefaultWorkingDirectory)\Results\*.xml'
 
-  - job: SeleniumTests
-    steps:
-    - script:
-        python selenium_tests.py
+  - deployment: SeleniumTests
+    environment: UdacityEnv
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - script:
+              python selenium_tests.py
 
-      displayName: 'Run tests'
+            displayName: 'Run tests'
