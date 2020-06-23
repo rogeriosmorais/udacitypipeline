@@ -90,8 +90,8 @@ stages:
                 sudo apt-get install unzip -y
                 sudo apt-get install -y chromium-browser
                 pip3 install selenium
-npm install -g newman
-npm install chromedriver
+                npm install -g newman
+                npm install chromedriver
                 export PATH=$PATH:some/path
 
   - deployment: FakeRestAPI
