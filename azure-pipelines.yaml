@@ -4,7 +4,7 @@ variables:
 stages:
 - stage: Terraform
   jobs:
-  - job: Terraform
+  - job: Deploy env
     steps:
     - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
       displayName: 'Use Terraform latest'    
@@ -12,7 +12,7 @@ stages:
       displayName: 'terraform init'
       inputs:
         command: init
-        workingDirectory: '$(System.DefaultWorkingDirectory)/_rogeriosmorais_terraform'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-master'
         backendType: azurerm
         backendServiceArm: 'Free Trial (7d1bdf9c-5976-4894-bbc3-6e8eacd69733)'
         backendAzureRmResourceGroupName: udacityrg
@@ -22,7 +22,7 @@ stages:
     - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
       displayName: 'terraform validate'
       inputs:
-        workingDirectory: '$(System.DefaultWorkingDirectory)/_rogeriosmorais_terraform'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-master'
         backendServiceArm: 'Free Trial (7d1bdf9c-5976-4894-bbc3-6e8eacd69733)'
         backendAzureRmResourceGroupName: udacityrg
         backendAzureRmStorageAccountName: cs210032000c8f9cee5
@@ -32,7 +32,7 @@ stages:
       displayName: 'terraform plan'
       inputs:
         command: plan
-        workingDirectory: '$(System.DefaultWorkingDirectory)/_rogeriosmorais_terraform'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-master'
         backendServiceArm: 'Free Trial (7d1bdf9c-5976-4894-bbc3-6e8eacd69733)'
         backendAzureRmResourceGroupName: udacityrg
         backendAzureRmStorageAccountName: cs210032000c8f9cee5
@@ -42,7 +42,7 @@ stages:
       displayName: 'terraform apply'
       inputs:
         command: apply
-        workingDirectory: '$(System.DefaultWorkingDirectory)/_rogeriosmorais_terraform'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-master'
         backendServiceArm: 'Free Trial (7d1bdf9c-5976-4894-bbc3-6e8eacd69733)'
         backendAzureRmResourceGroupName: udacityrg
         backendAzureRmStorageAccountName: cs210032000c8f9cee5
