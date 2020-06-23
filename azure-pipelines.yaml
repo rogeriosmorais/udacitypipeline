@@ -121,7 +121,7 @@ stages:
       displayName: 'Run regression tests'
       continueOnError: true
     - script: |
-       newman run "Data Validation Test Suite.postman_collection.json" -e "Production.postman_environment.json" --reporters cli,junit --reporter-junit-export junitDataVal.xml
+       newman run "Data Validation Test Suite.postman_collection.json" -e "Production.postman_environment.json" --reporters cli,junit --reporter-junit-export junitDataVal.xml --delay-request 500
 
       workingDirectory: '$(System.DefaultWorkingDirectory)'
       displayName: 'Run data validation tests'
@@ -133,6 +133,7 @@ stages:
         testResultsFiles: '*.xml'
         mergeTestResults: true
         searchFolder: '$(System.DefaultWorkingDirectory)'
+		
 #  - job: SeleniumTests
 #    pool:
 #      vmImage: 'Ubuntu-16.04'    
