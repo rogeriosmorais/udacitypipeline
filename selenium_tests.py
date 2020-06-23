@@ -1,34 +1,3 @@
-Skip to content
-Search or jump to…
-
-Pull requests
-Issues
-Marketplace
-Explore
- 
-@rogeriosmorais 
-rogeriosmorais
-/
-selenium-azure
-1
-00
-Code
-Issues
-Pull requests
-Actions
-Projects
-Wiki
-Security
-Insights
-Settings
-selenium-azure/selenium_tests.py /
-@rogeriosmorais
-rogeriosmorais Rename selenium.py to selenium_tests.py
-Latest commit d5e4176 5 days ago
- History
- 1 contributor
-57 lines (50 sloc)  2.88 KB
-  
 import sys
 sys.path.insert(0,'/usr/lib/chromium-browser/chromedriver')
 sys.path.insert(0,'/home/vsts/work/node_modules/chromedriver/lib/chromedriver/chromedriver')
@@ -84,17 +53,3 @@ def removeProductsFromCart(driver):
 driver = login('standard_user', 'secret_sauce')
 addProductsToCart(driver)
 removeProductsFromCart(driver)
-
-print("Finished test execution.")
-© 2020 GitHub, Inc.
-Terms
-Privacy
-Security
-Status
-Help
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
