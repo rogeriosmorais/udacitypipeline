@@ -87,7 +87,6 @@ stages:
     environment:
       name: UdacityEnv
       resourceType: VirtualMachine
-      tags: VM
     strategy:
       runOnce:
         deploy:
@@ -104,13 +103,15 @@ stages:
                 sudo apt-get install -y chromium-browser
                 pip3 install selenium				
                 npm install chromedriver
+                npm install newman
                 export PATH=$PATH:some/path
 
 - stage: Testing
   jobs:
   - job: PostmanTests
+    environment: UdacityEnv
     steps:
-    - script: 'npm install -g newman'
+    - script: 'npm install newman'
       workingDirectory: '$(System.DefaultWorkingDirectory)'
       displayName: 'Install newman'
     - script: |
