@@ -73,7 +73,7 @@
 					"script": {
 						"id": "0b8a7166-e255-4804-92ef-96aea5d5d86e",
 						"exec": [
-							"pm.test(\"Successful response\", function () {\r",
+							"pm.test(\"Successfully validated data after update\", function () {\r",
 							"    pm.expect(pm.response.text()).to.include(pm.environment.get(\"name\"));\r",
 							"    pm.expect(pm.response.text()).to.include(pm.environment.get(\"salary\"));\r",
 							"    pm.expect(pm.response.text()).to.include(pm.environment.get(\"age\"));\r",
