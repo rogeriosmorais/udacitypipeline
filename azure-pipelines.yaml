@@ -115,13 +115,18 @@ stages:
       workingDirectory: '$(System.DefaultWorkingDirectory)'
       displayName: 'Install newman'
     - script: |
-       newman run "Regresssion Test Suite.postman_collection.json" -e "Production.postman_environment.json" --reporters cli,junit --reporter-junit-export Results\junitRegression.xml
+       newman run "Regresssion Test Suite.postman_collection.json" -e "Production.postman_environment.json" --reporters cli,junit --reporter-junit-export Results\junitRegression.xml       
+
+      workingDirectory: '$(System.DefaultWorkingDirectory)'
+      displayName: 'Run Regression tests'
+      continueOnError: true
+     - script: |       
        newman run "Data Validation Test Suite.postman_collection.json" -e "Production.postman_environment.json" --reporters cli,junit --reporter-junit-export Results\junitDataVal.xml
 
       workingDirectory: '$(System.DefaultWorkingDirectory)'
-      displayName: 'Run API tests'
+      displayName: 'Run Data Validation tests'
       continueOnError: true
-    - task: PublishTestResults@1
+    - task: PublishTestResults@2
       displayName: 'Publish Test Results'
       inputs:
         testResultsFiles: '$(System.DefaultWorkingDirectory)\Results\*.xml'
