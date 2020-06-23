@@ -4,7 +4,7 @@ variables:
 stages:
 - stage: Terraform
   jobs:
-  - job: Deploy env
+  - job: Terraform
     steps:
     - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
       displayName: 'Use Terraform latest'    
