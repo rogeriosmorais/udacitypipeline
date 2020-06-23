@@ -23,7 +23,7 @@ stages:
   - deployment: FakeRestAPI
     pool:
       vmImage: 'Ubuntu-16.04'
-    environment: 'udacity'
+    environment: 'UdacityEnv'
     strategy:
       runOnce:
         deploy:
@@ -38,7 +38,7 @@ stages:
   - deployment: VMDeploy
     displayName: 'Deploy VM'
     environment:
-      name:  'udacity'
+      name:  'UdacityEnv'
       resourceType: VirtualMachine      
     strategy:
       runOnce:
