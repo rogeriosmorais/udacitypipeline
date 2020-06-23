@@ -69,7 +69,23 @@ stages:
       artifact: drop-fakerestapi
 - stage: Deploy
   jobs:
-  
+
+  - deployment: FakeRestAPI
+      pool:
+        vmImage: 'Ubuntu-16.04'
+      environment: 'UdacityEnv'
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - task: AzureWebApp@1
+              displayName: 'Deploy Azure Web App'
+              inputs:
+                azureSubscription: 'Azure'
+                appName: 'udacityapp-AppService'
+                appType: webApp
+                package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip
+				
   - deployment: VMDeploy
     displayName: 'Deploy VM'
     environment:
@@ -94,21 +110,7 @@ stages:
                 npm install chromedriver
                 export PATH=$PATH:some/path
 
-  - deployment: FakeRestAPI
-      pool:
-        vmImage: 'Ubuntu-16.04'
-      environment: 'UdacityEnv'
-      strategy:
-        runOnce:
-          deploy:
-            steps:
-            - task: AzureWebApp@1
-              displayName: 'Deploy Azure Web App'
-              inputs:
-                azureSubscription: 'Azure'
-                appName: 'udacityapp-AppService'
-                appType: webApp
-                package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip
+
 
 
 variables:
