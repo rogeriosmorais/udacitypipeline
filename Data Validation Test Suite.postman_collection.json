@@ -13,10 +13,24 @@
 					"script": {
 						"id": "031d52e5-707d-45f4-b900-79bc357e7e75",
 						"exec": [
-							"pm.test(\"Successful response\", function () {\r",
-							"    pm.expect(pm.response.text()).to.include(\"success\");\r",
-							"});\r",
-							""
+							"pm.response.headers.all()\r",
+							"    .filter(headerObj => { return headerObj.key == \"Set-Cookie\";})\r",
+							"    .forEach(headerObj => {\r",
+							"        console.log(headerObj.key +\": \"+headerObj.value)\r",
+							"    })"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "67a87331-ac4d-404e-b3b3-934b466ce015",
+						"exec": [
+							"pm.request.headers.add({\r",
+							"key: 'Cookie',\r",
+							"value: 'PHPSESSID=c7962e05472acf6fd53fd4cae2c25289'\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -24,7 +38,14 @@
 			],
 			"request": {
 				"method": "PUT",
-				"header": [],
+				"header": [
+					{
+						"key": "PHPSESSID",
+						"value": "c7962e05472acf6fd53fd4cae2c25289",
+						"type": "text",
+						"disabled": true
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\r\n    \"name\": \"{{name}}\",\r\n    \"salary\": \"{{salary}}\",\r\n    \"age\": \"{{age}}\"\r\n}",
@@ -58,6 +79,19 @@
 							"    pm.expect(pm.response.text()).to.include(pm.environment.get(\"age\"));\r",
 							"});\r",
 							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "91738a49-56b0-4294-b7f0-40960b4cd051",
+						"exec": [
+							"pm.request.headers.add({\r",
+							"key: 'Cookie',\r",
+							"value: 'PHPSESSID=c7962e05472acf6fd53fd4cae2c25289'\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
