@@ -1,6 +1,7 @@
 name: Azure Pipelines
 variables:
   python.version: '3.7.6'
+  host: cdpartsun2-dev.azurewebsites.net
 stages:
 - stage: Build
   jobs:
@@ -23,7 +24,7 @@ stages:
   - deployment: FakeRestAPI
     pool:
       vmImage: 'Ubuntu-16.04'
-    environment: 'ENVIRONMENT NAME'
+    environment: 'UdacityEnv'
     strategy:
       runOnce:
         deploy:
@@ -35,27 +36,27 @@ stages:
               appName: 'udacityapp-AppService'
               appType: webApp
               package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip
-  #- deployment: VMDeploy
-  #  displayName: NAME
-  #  environment:
-  #    name:  ENVIRONMENT NAME
-  #    resourceType: VirtualMachine
-  #    tags: VM
-  #  strategy:
-  #    runOnce:
-  #      deploy:
-  #        steps:
-  #        - task: Bash@3
-  #          inputs:
-  #            targetType: 'inline'
-  #            script: |
-  #              #! /bin/bash
-  #            
-  #              sudo apt-get upgrade -y
-  #              sudo apt-get install python3-pip -y
-  #              sudo apt-get install unzip -y
-  #              sudo apt-get install -y chromium-browser
-  #              pip3 install selenium
-  #              export PATH=$PATH:some/path
+  - deployment: VMDeploy
+    displayName: NAME
+    environment:
+      name: UdacityEnv
+      resourceType: VirtualMachine
+      tags: VM
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: |
+                #! /bin/bash
+              
+                sudo apt-get upgrade -y
+                sudo apt-get install python3-pip -y
+                sudo apt-get install unzip -y
+                sudo apt-get install -y chromium-browser
+                pip3 install selenium
+                export PATH=$PATH:some/path
 
 
