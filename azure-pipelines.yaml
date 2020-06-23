@@ -1,108 +1,15 @@
-name: Azure Pipelines
-variables:
-  python.version: '3.7.6'
-  host: cdpartsun2-dev.azurewebsites.net
-stages:
-- stage: Terraform
-  jobs:
-  - job: Terraform
+- job: PostmanTests
     steps:
-    - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
-      displayName: 'Use Terraform latest'    
-    - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-      displayName: 'terraform init'
+    - script: |
+       newman run "Regresssion Test Suite.postman_collection.json" -e "Production.postman_environment.json" --reporters cli,junit --reporter-junit-export Results\junitReport.xml        
+      workingDirectory: '$(System.DefaultWorkingDirectory)'
+      displayName: 'Run API tests'
+      continueOnError: true    
+    - task: PublishTestResults@1
+      displayName: 'Publish Test Results'
       inputs:
-        command: init
-        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-master'
-        backendType: azurerm
-        backendServiceArm: 'Free Trial (7d1bdf9c-5976-4894-bbc3-6e8eacd69733)'
-        backendAzureRmResourceGroupName: udacityrg
-        backendAzureRmStorageAccountName: cs210032000c8f9cee5
-        backendAzureRmContainerName: tstate2
-        backendAzureRmKey: terraform.tstate2    
-    - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-      displayName: 'terraform validate'
-      inputs:
-        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-master'
-        backendServiceArm: 'Free Trial (7d1bdf9c-5976-4894-bbc3-6e8eacd69733)'
-        backendAzureRmResourceGroupName: udacityrg
-        backendAzureRmStorageAccountName: cs210032000c8f9cee5
-        backendAzureRmContainerName: tstate2
-        backendAzureRmKey: terraform.tstate2    
-    - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-      displayName: 'terraform plan'
-      inputs:
-        command: plan
-        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-master'
-        backendServiceArm: 'Free Trial (7d1bdf9c-5976-4894-bbc3-6e8eacd69733)'
-        backendAzureRmResourceGroupName: udacityrg
-        backendAzureRmStorageAccountName: cs210032000c8f9cee5
-        backendAzureRmContainerName: tstate2
-        backendAzureRmKey: terraform.tstate2    
-    - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-      displayName: 'terraform apply'
-      inputs:
-        command: apply
-        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-master'
-        backendServiceArm: 'Free Trial (7d1bdf9c-5976-4894-bbc3-6e8eacd69733)'
-        backendAzureRmResourceGroupName: udacityrg
-        backendAzureRmStorageAccountName: cs210032000c8f9cee5
-        backendAzureRmContainerName: tstate2
-        backendAzureRmKey: terraform.tstate2 
-- stage: Build
-  jobs:
-  - job: Build
-    pool:
-      name: Hosted Ubuntu 1604
-    steps:    
-    - task: ArchiveFiles@2
-      displayName: 'Archive FakeRestAPI'
-      inputs:
-        rootFolderOrFile: 'fakerestapi'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
-    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip
-      displayName: 'Upload Package'
-      artifact: drop-fakerestapi
-- stage: Deploy
-  jobs:
-  - deployment: FakeRestAPI
-    pool:
-      vmImage: 'Ubuntu-16.04'
-    environment: 'UdacityEnv'
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - task: AzureWebApp@1
-            displayName: 'Deploy Azure Web App'
-            inputs:
-              azureSubscription: 'Azure'
-              appName: 'udacityapp-AppService'
-              appType: webApp
-              package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip
-  - deployment: VMDeploy
-    displayName: NAME
-    environment:
-      name: UdacityEnv
-      resourceType: VirtualMachine
-      tags: VM
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - task: Bash@3
-            inputs:
-              targetType: 'inline'
-              script: |
-                #! /bin/bash
-              
-                sudo apt-get upgrade -y
-                sudo apt-get install python3-pip -y
-                sudo apt-get install unzip -y
-                sudo apt-get install -y chromium-browser
-                pip3 install selenium
-                export PATH=$PATH:some/path
-
-
+        testResultsFiles: '$(System.DefaultWorkingDirectory)\Results\*.xml'
+  - job: SeleniumTests
+    - script:  
+        python selenium_tests.py    
+      displayName: 'Run tests'
