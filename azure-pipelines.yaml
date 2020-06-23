@@ -133,7 +133,6 @@ stages:
         testResultsFiles: '*.xml'
         mergeTestResults: true
         searchFolder: '$(System.DefaultWorkingDirectory)'
-		
 #  - job: SeleniumTests
 #    pool:
 #      vmImage: 'Ubuntu-16.04'    
