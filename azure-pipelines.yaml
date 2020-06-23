@@ -107,23 +107,23 @@ stages:
 #
 - stage: Testing
   jobs:
-  - job: PostmanTests
-    pool:
-      vmImage: 'windows-latest'      
-    steps:
-    - script: 'npm install -g newman'      
-      workingDirectory: '$(System.DefaultWorkingDirectory)'
-      displayName: 'Install newman'
-    - script: |
-       newman run "Regresssion Test Suite.postman_collection.json" -e "Production.postman_environment.json" --reporters cli,junit --reporter-junit-export Results\junitReport.xml
-
-      workingDirectory: '$(System.DefaultWorkingDirectory)'
-      displayName: 'Run API tests'
-      continueOnError: true
-    - task: PublishTestResults@1
-      displayName: 'Publish Test Results'
-      inputs:
-        testResultsFiles: '$(System.DefaultWorkingDirectory)\Results\*.xml'
+#  - job: PostmanTests
+#    pool:
+#      vmImage: 'windows-latest'      
+#    steps:
+#    - script: 'npm install -g newman'      
+#      workingDirectory: '$(System.DefaultWorkingDirectory)'
+#      displayName: 'Install newman'
+#    - script: |
+#       newman run "Regresssion Test Suite.postman_collection.json" -e "Production.postman_environment.json" --reporters cli,junit --reporter-junit-export Results\junitReport.xml
+#
+#      workingDirectory: '$(System.DefaultWorkingDirectory)'
+#      displayName: 'Run API tests'
+#      continueOnError: true
+#    - task: PublishTestResults@1
+#      displayName: 'Publish Test Results'
+#      inputs:
+#        testResultsFiles: '$(System.DefaultWorkingDirectory)\Results\*.xml'
 
   - job: SeleniumTests
     pool:
@@ -139,3 +139,5 @@ stages:
 
       displayName: 'Run tests'
       workingDirectory: '$(System.DefaultWorkingDirectory)'
+    - publish: $(System.DefaultWorkingDirectory)/selenium_logs.txt
+      artifact: Selenium_logs
