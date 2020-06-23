@@ -1,57 +1,7 @@
 name: Azure Pipelines
 variables:
   python.version: '3.7.6'
-  host: cdpartsun2-dev.azurewebsites.net
 
-trigger:
-- master
-stages:
-- stage: Terraform
-  jobs:
-  - job: Terraform
-    steps:
-    - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
-      displayName: 'Use Terraform latest'    
-    - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-      displayName: 'terraform init'
-      inputs:
-        command: init
-        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-master'
-        backendType: azurerm
-        backendServiceArm: 'Free Trial (7d1bdf9c-5976-4894-bbc3-6e8eacd69733)'
-        backendAzureRmResourceGroupName: udacityrg
-        backendAzureRmStorageAccountName: cs210032000c8f9cee5
-        backendAzureRmContainerName: tstate2
-        backendAzureRmKey: terraform.tstate2    
-    - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-      displayName: 'terraform validate'
-      inputs:
-        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-master'
-        backendServiceArm: 'Free Trial (7d1bdf9c-5976-4894-bbc3-6e8eacd69733)'
-        backendAzureRmResourceGroupName: udacityrg
-        backendAzureRmStorageAccountName: cs210032000c8f9cee5
-        backendAzureRmContainerName: tstate2
-        backendAzureRmKey: terraform.tstate2    
-    - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-      displayName: 'terraform plan'
-      inputs:
-        command: plan
-        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-master'
-        backendServiceArm: 'Free Trial (7d1bdf9c-5976-4894-bbc3-6e8eacd69733)'
-        backendAzureRmResourceGroupName: udacityrg
-        backendAzureRmStorageAccountName: cs210032000c8f9cee5
-        backendAzureRmContainerName: tstate2
-        backendAzureRmKey: terraform.tstate2    
-    - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-      displayName: 'terraform apply'
-      inputs:
-        command: apply
-        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-master'
-        backendServiceArm: 'Free Trial (7d1bdf9c-5976-4894-bbc3-6e8eacd69733)'
-        backendAzureRmResourceGroupName: udacityrg
-        backendAzureRmStorageAccountName: cs210032000c8f9cee5
-        backendAzureRmContainerName: tstate2
-        backendAzureRmKey: terraform.tstate2  
 - stage: Build
   jobs:
   - job: Build
@@ -108,38 +58,3 @@ stages:
                 npm install -g newman
                 npm install chromedriver
                 export PATH=$PATH:some/path
-- stage: Testing
-  jobs:
-#  - job: JMeterTests
-#    pool:
-#      vmImage: ubuntu-latest
-#    displayName: Run JMeter tests
-#    steps:
-#    - task: Bash@3
-#      displayName: Stress and Endurance JMeter tests
-#      inputs:
-#        targetType: filePath
-#        filePath: 'jmeter/test.sh'
-#        arguments: '$PWD JMeter_Stress_Endurance.jmx $(host)'
-#        workingDirectory: jmeter
-#        failOnStderr: false
-#    - task: PublishPipelineArtifact@1
-#      displayName: Publish JMeter Report
-#      inputs:
-#        targetPath: jmeter/report
-#        artifact: jmeter
-  - job: PostmanTests
-    steps:
-    - script: |
-       newman run "Regresssion Test Suite.postman_collection.json" -e "Production.postman_environment.json" --reporters cli,junit --reporter-junit-export Results\junitReport.xml        
-      workingDirectory: '$(System.DefaultWorkingDirectory)'
-      displayName: 'Run API tests'
-      continueOnError: true    
-    - task: PublishTestResults@1
-      displayName: 'Publish Test Results'
-      inputs:
-        testResultsFiles: '$(System.DefaultWorkingDirectory)\Results\*.xml'
-  - job: SeleniumTests
-    - script:  
-        python selenium_tests.py    
-      displayName: 'Run tests'
