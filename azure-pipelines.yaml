@@ -49,8 +49,7 @@ stages:
         backendAzureRmResourceGroupName: udacityrg
         backendAzureRmStorageAccountName: cs210032000c8f9cee5
         backendAzureRmContainerName: tstate2
-        backendAzureRmKey: terraform.tstate2
-  
+        backendAzureRmKey: terraform.tstate2  
 - stage: Build
   jobs:
   - job: Build
@@ -69,7 +68,6 @@ stages:
       artifact: drop-fakerestapi
 - stage: Deploy
   jobs:
-
   - deployment: FakeRestAPI
       pool:
         vmImage: 'Ubuntu-16.04'
@@ -84,8 +82,7 @@ stages:
                 azureSubscription: 'Azure'
                 appName: 'udacityapp-AppService'
                 appType: webApp
-                package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip
-				
+                package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip				
   - deployment: VMDeploy
     displayName: 'Deploy VM'
     environment:
@@ -109,14 +106,7 @@ stages:
                 npm install -g newman
                 npm install chromedriver
                 export PATH=$PATH:some/path
-
-
-
-
-variables:
-
 - stage: Testing
-
   jobs:
 #  - job: JMeterTests
 #    pool:
@@ -136,23 +126,18 @@ variables:
 #      inputs:
 #        targetPath: jmeter/report
 #        artifact: jmeter
-
   - job: PostmanTests
     steps:
     - script: |
-       newman run "Regresssion Test Suite.postman_collection.json" -e "Production.postman_environment.json" --reporters cli,junit --reporter-junit-export Results\junitReport.xml 
-       
+       newman run "Regresssion Test Suite.postman_collection.json" -e "Production.postman_environment.json" --reporters cli,junit --reporter-junit-export Results\junitReport.xml        
       workingDirectory: '$(System.DefaultWorkingDirectory)'
       displayName: 'Run API tests'
-      continueOnError: true  
-    
+      continueOnError: true    
     - task: PublishTestResults@1
       displayName: 'Publish Test Results'
       inputs:
         testResultsFiles: '$(System.DefaultWorkingDirectory)\Results\*.xml'
-
   - job: SeleniumTests
     - script:  
-        python selenium_tests.py
-    
+        python selenium_tests.py    
       displayName: 'Run tests'
