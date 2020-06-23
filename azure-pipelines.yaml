@@ -3,6 +3,52 @@ variables:
   python.version: '3.7.6'
   host: cdpartsun2-dev.azurewebsites.net
 stages:
+- stage: Terraform
+  jobs:
+  - job: Terraform
+    steps:
+    - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
+      displayName: 'Use Terraform latest'    
+    - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+      displayName: 'terraform init'
+      inputs:
+        command: init
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-master'
+        backendType: azurerm
+        backendServiceArm: 'Free Trial (7d1bdf9c-5976-4894-bbc3-6e8eacd69733)'
+        backendAzureRmResourceGroupName: udacityrg
+        backendAzureRmStorageAccountName: cs210032000c8f9cee5
+        backendAzureRmContainerName: tstate2
+        backendAzureRmKey: terraform.tstate2    
+    - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+      displayName: 'terraform validate'
+      inputs:
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-master'
+        backendServiceArm: 'Free Trial (7d1bdf9c-5976-4894-bbc3-6e8eacd69733)'
+        backendAzureRmResourceGroupName: udacityrg
+        backendAzureRmStorageAccountName: cs210032000c8f9cee5
+        backendAzureRmContainerName: tstate2
+        backendAzureRmKey: terraform.tstate2    
+    - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+      displayName: 'terraform plan'
+      inputs:
+        command: plan
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-master'
+        backendServiceArm: 'Free Trial (7d1bdf9c-5976-4894-bbc3-6e8eacd69733)'
+        backendAzureRmResourceGroupName: udacityrg
+        backendAzureRmStorageAccountName: cs210032000c8f9cee5
+        backendAzureRmContainerName: tstate2
+        backendAzureRmKey: terraform.tstate2    
+    - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+      displayName: 'terraform apply'
+      inputs:
+        command: apply
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-master'
+        backendServiceArm: 'Free Trial (7d1bdf9c-5976-4894-bbc3-6e8eacd69733)'
+        backendAzureRmResourceGroupName: udacityrg
+        backendAzureRmStorageAccountName: cs210032000c8f9cee5
+        backendAzureRmContainerName: tstate2
+        backendAzureRmKey: terraform.tstate2 
 - stage: Build
   jobs:
   - job: Build
