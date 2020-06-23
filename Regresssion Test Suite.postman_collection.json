@@ -1,0 +1,169 @@
+{
+	"info": {
+		"_postman_id": "06ca655f-8885-4f86-84dd-1f6fd5a3c671",
+		"name": "Regresssion Test Suite",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create employee",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "442d9f65-5a6e-42db-91b1-0e6b489d4ab3",
+						"exec": [
+							"pm.test(\"Successful response\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"success\");\r",
+							"});\r",
+							"var json = pm.response.json();\r",
+							"pm.environment.set(\"id\", json.data.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"{{name}}\",\r\n    \"salary\": \"{{salary}}\",\r\n    \"age\": \"{{age}}\"\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}create",
+					"host": [
+						"{{url}}create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all employee data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d543c810-34e0-49f5-a13c-a6505c86f149",
+						"exec": [
+							"pm.test(\"Successful response\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"success\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}employees",
+					"host": [
+						"{{url}}employees"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get a single employee data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "692a68f5-5c33-4c70-8031-db39f4656278",
+						"exec": [
+							"pm.test(\"Successful response\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"success\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}employee/1",
+					"host": [
+						"{{url}}employee"
+					],
+					"path": [
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update an employee record",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "70fd15fe-b84c-4a95-84c1-38f66896717e",
+						"exec": [
+							"pm.test(\"Successful response\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"success\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{url}}update/21",
+					"host": [
+						"{{url}}update"
+					],
+					"path": [
+						"21"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete an employee record",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2b655192-ee74-4aaf-aa21-9a1bc67798dd",
+						"exec": [
+							"pm.test(\"Successful response\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"success\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}delete/{{id}}",
+					"host": [
+						"{{url}}delete"
+					],
+					"path": [
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
