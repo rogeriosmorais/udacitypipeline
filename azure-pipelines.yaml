@@ -19,42 +19,43 @@ stages:
       displayName: 'Upload Package'
       artifact: drop-fakerestapi
 - stage: Deploy
-  jobs:  
+  jobs:
   - deployment: FakeRestAPI
-      pool:
-        vmImage: 'Ubuntu-16.04'
-      environment: 'UdacityEnv'
-      strategy:
-        runOnce:
-          deploy:
-            steps:
-            - task: AzureWebApp@1
-              displayName: 'Deploy Azure Web App'
-              inputs:
-                azureSubscription: 'Azure'
-                appName: 'udacityapp-AppService'
-                appType: webApp
-                package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip				
-  - deployment: VMDeploy
-    displayName: 'Deploy VM'
-    environment:
-      name:  'UdacityEnv'
-      resourceType: VirtualMachine      
+    pool:
+      vmImage: 'Ubuntu-16.04'
+    environment: 'ENVIRONMENT NAME'
     strategy:
       runOnce:
         deploy:
           steps:
-          - task: Bash@3
+          - task: AzureWebApp@1
+            displayName: 'Deploy Azure Web App'
             inputs:
-              targetType: 'inline'
-              script: |
-                #! /bin/bash
-              
-                sudo apt-get upgrade -y
-                sudo apt-get install python3-pip -y
-                sudo apt-get install unzip -y
-                sudo apt-get install -y chromium-browser
-                pip3 install selenium
-                npm install -g newman
-                npm install chromedriver
-                export PATH=$PATH:some/path
+              azureSubscription: 'Azure'
+              appName: 'udacityapp-AppService'
+              appType: webApp
+              package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip
+  #- deployment: VMDeploy
+  #  displayName: NAME
+  #  environment:
+  #    name:  ENVIRONMENT NAME
+  #    resourceType: VirtualMachine
+  #    tags: VM
+  #  strategy:
+  #    runOnce:
+  #      deploy:
+  #        steps:
+  #        - task: Bash@3
+  #          inputs:
+  #            targetType: 'inline'
+  #            script: |
+  #              #! /bin/bash
+  #            
+  #              sudo apt-get upgrade -y
+  #              sudo apt-get install python3-pip -y
+  #              sudo apt-get install unzip -y
+  #              sudo apt-get install -y chromium-browser
+  #              pip3 install selenium
+  #              export PATH=$PATH:some/path
+
+
