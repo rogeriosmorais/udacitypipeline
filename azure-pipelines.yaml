@@ -123,9 +123,10 @@ stages:
       displayName: 'Publish Test Results'
       inputs:
         testResultsFiles: '$(System.DefaultWorkingDirectory)\Results\*.xml'
-  - job: SeleniumTests
-    - script: |
-        python selenium_tests.py
-        
-      displayName: 'Run Selenium tests'
 
+  - job: SeleniumTests
+    steps:
+	- script: | 
+        python selenium_tests.py    
+      
+	  displayName: 'Run Selenium tests'
