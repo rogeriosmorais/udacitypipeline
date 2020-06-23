@@ -101,7 +101,7 @@ stages:
 #                sudo apt-get install python3-pip -y
 #                sudo apt-get install unzip -y
 #                sudo apt-get install -y chromium-browser
-#                pip3 install selenium				
+#                pip3 install selenium
 #                npm install chromedriver                
 #                export PATH=$PATH:some/path
 #
@@ -116,7 +116,7 @@ stages:
       displayName: 'Install newman'
     - script: |
        newman run "Regresssion Test Suite.postman_collection.json" -e "Production.postman_environment.json" --reporters cli,junit --reporter-junit-export Results\junitReport.xml
-	
+
       workingDirectory: '$(System.DefaultWorkingDirectory)'
       displayName: 'Run API tests'
       continueOnError: true
@@ -124,7 +124,7 @@ stages:
       displayName: 'Publish Test Results'
       inputs:
         testResultsFiles: '$(System.DefaultWorkingDirectory)\Results\*.xml'
-	
+
   - deployment: SeleniumTests
     environment: UdacityEnv
     strategy:
