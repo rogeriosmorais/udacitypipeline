@@ -125,7 +125,7 @@ stages:
         testResultsFiles: '$(System.DefaultWorkingDirectory)\Results\*.xml'
 
   - job: SeleniumTests    
-    - script: |
-       python selenium_tests.py
+    - script:
+        python selenium_tests.py
 
       displayName: 'Run tests'
