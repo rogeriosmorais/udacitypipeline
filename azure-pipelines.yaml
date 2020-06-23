@@ -113,9 +113,10 @@ stages:
       runOnce:
         deploy:
           steps:
-          - script: 'npm install -g newman'
-            workingDirectory: '$(System.DefaultWorkingDirectory)'
-            displayName: 'Install newman'
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: 'npm install -g newman'
           - script: |
              newman run "Regresssion Test Suite.postman_collection.json" -e "Production.postman_environment.json" --reporters cli,junit --reporter-junit-export Results\junitReport.xml
 
