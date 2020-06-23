@@ -106,38 +106,3 @@ stages:
                 npm install -g newman
                 npm install chromedriver
                 export PATH=$PATH:some/path
-- stage: Testing
-  jobs:
-#  - job: JMeterTests
-#    pool:
-#      vmImage: ubuntu-latest
-#    displayName: Run JMeter tests
-#    steps:
-#    - task: Bash@3
-#      displayName: Stress and Endurance JMeter tests
-#      inputs:
-#        targetType: filePath
-#        filePath: 'jmeter/test.sh'
-#        arguments: '$PWD JMeter_Stress_Endurance.jmx $(host)'
-#        workingDirectory: jmeter
-#        failOnStderr: false
-#    - task: PublishPipelineArtifact@1
-#      displayName: Publish JMeter Report
-#      inputs:
-#        targetPath: jmeter/report
-#        artifact: jmeter
-  - job: PostmanTests
-    steps:
-    - script: |
-       newman run "Regresssion Test Suite.postman_collection.json" -e "Production.postman_environment.json" --reporters cli,junit --reporter-junit-export Results\junitReport.xml        
-      workingDirectory: '$(System.DefaultWorkingDirectory)'
-      displayName: 'Run API tests'
-      continueOnError: true    
-    - task: PublishTestResults@1
-      displayName: 'Publish Test Results'
-      inputs:
-        testResultsFiles: '$(System.DefaultWorkingDirectory)\Results\*.xml'
-  - job: SeleniumTests
-    - script:  
-        python selenium_tests.py    
-      displayName: 'Run tests'
