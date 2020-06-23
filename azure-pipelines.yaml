@@ -102,8 +102,7 @@ stages:
                 sudo apt-get install unzip -y
                 sudo apt-get install -y chromium-browser
                 pip3 install selenium				
-                npm install chromedriver
-                npm install -g newman
+                npm install chromedriver                
                 export PATH=$PATH:some/path
 
 - stage: Testing
@@ -114,11 +113,11 @@ stages:
       runOnce:
         deploy:
           steps:
-          - script: 'npm install newman'
+          - script: 'npm install -g newman'
             workingDirectory: '$(System.DefaultWorkingDirectory)'
             displayName: 'Install newman'
           - script: |
-             ./node_modules/newman/newman run "Regresssion Test Suite.postman_collection.json" -e "Production.postman_environment.json" --reporters cli,junit --reporter-junit-export Results\junitReport.xml
+             newman run "Regresssion Test Suite.postman_collection.json" -e "Production.postman_environment.json" --reporters cli,junit --reporter-junit-export Results\junitReport.xml
 
             workingDirectory: '$(System.DefaultWorkingDirectory)'
             displayName: 'Run API tests'
