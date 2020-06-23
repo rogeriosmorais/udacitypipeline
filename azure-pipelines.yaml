@@ -126,7 +126,5 @@ stages:
 
   - job: SeleniumTests
     steps:
-	- script: | 
-        python selenium_tests.py    
-      
+	- script: 'python selenium_tests.py'
 	  displayName: 'Run Selenium tests'
