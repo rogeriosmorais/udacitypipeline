@@ -111,7 +111,7 @@ stages:
     steps:
     - script: |
        newman run "Regresssion Test Suite.postman_collection.json" -e "Production.postman_environment.json" --reporters cli,junit --reporter-junit-export Results\junitReport.xml
-	   
+
       workingDirectory: '$(System.DefaultWorkingDirectory)'
       displayName: 'Run API tests'
       continueOnError: true
