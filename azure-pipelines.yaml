@@ -115,13 +115,13 @@ stages:
       workingDirectory: '$(System.DefaultWorkingDirectory)'
       displayName: 'Install newman'
     - script: |
-       newman run "Regresssion Test Suite.postman_collection.json" -e "Production.postman_environment.json" --reporters cli,junit --reporter-junit-export Results\junitRegression.xml
+       newman run "Regresssion Test Suite.postman_collection.json" -e "Production.postman_environment.json" --reporters cli,junit --reporter-junit-export junitRegression.xml
 
       workingDirectory: '$(System.DefaultWorkingDirectory)'
       displayName: 'Run regression tests'
       continueOnError: true
     - script: |
-       newman run "Data Validation Test Suite.postman_collection.json" -e "Production.postman_environment.json" --reporters cli,junit --reporter-junit-export Results\junitDataVal.xml
+       newman run "Data Validation Test Suite.postman_collection.json" -e "Production.postman_environment.json" --reporters cli,junit --reporter-junit-export junitDataVal.xml
 
       workingDirectory: '$(System.DefaultWorkingDirectory)'
       displayName: 'Run data validation tests'
@@ -130,8 +130,10 @@ stages:
       displayName: 'Publish Test Results'	  
       inputs:
         testResultsFormat: 'JUnit'
-        testResultsFiles: '$(System.DefaultWorkingDirectory)/Results/*.xml'
-
+        testResultsFiles: '*.xml'
+        mergeTestResults: true
+        searchFolder: '$(System.DefaultWorkingDirectory)'
+		
 #  - job: SeleniumTests
 #    pool:
 #      vmImage: 'Ubuntu-16.04'    
