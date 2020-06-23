@@ -107,29 +107,24 @@ stages:
 #
 - stage: Testing
   jobs:
-  - deployment: PostmanTests
-    environment: 
-      name: UdacityEnv
-      resourceType: VirtualMachine
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - task: Bash@3
-            inputs:
-              targetType: 'inline'
-              script: 'npm install -g newman'
-          - script: |
-             newman run "Regresssion Test Suite.postman_collection.json" -e "Production.postman_environment.json" --reporters cli,junit --reporter-junit-export Results\junitReport.xml
-
-            workingDirectory: '$(System.DefaultWorkingDirectory)'
-            displayName: 'Run API tests'
-            continueOnError: true
-          - task: PublishTestResults@1
-            displayName: 'Publish Test Results'
-            inputs:
-              testResultsFiles: '$(System.DefaultWorkingDirectory)\Results\*.xml'
-
+  - job: PostmanTests
+    pool:
+      vmImage: 'windows-latest'      
+    steps:
+    - script: 'npm install -g newman'      
+      workingDirectory: '$(System.DefaultWorkingDirectory)'
+      displayName: 'Install newman'
+    - script: |
+       newman run "Regresssion Test Suite.postman_collection.json" -e "Production.postman_environment.json" --reporters cli,junit --reporter-junit-export Results\junitReport.xml
+	
+      workingDirectory: '$(System.DefaultWorkingDirectory)'
+      displayName: 'Run API tests'
+      continueOnError: true
+    - task: PublishTestResults@1
+      displayName: 'Publish Test Results'
+      inputs:
+        testResultsFiles: '$(System.DefaultWorkingDirectory)\Results\*.xml'
+	
   - deployment: SeleniumTests
     environment: UdacityEnv
     strategy:
