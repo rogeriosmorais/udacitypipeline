@@ -6,6 +6,63 @@
 	},
 	"item": [
 		{
+			"name": "Create employee",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bc52dbec-2233-45af-ae84-87388fb33d4a",
+						"exec": [
+							"var header_string = postman.getResponseHeader('Set-Cookie');\r",
+							"console.log(header_string);\r",
+							"\r",
+							"if (typeof header_string === 'string') {\r",
+							"    pm.environment.set('cookie', header_string);\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Successfully validated data after creation\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(pm.environment.get(\"name\"));\r",
+							"    pm.expect(pm.response.text()).to.include(pm.environment.get(\"salary\"));\r",
+							"    pm.expect(pm.response.text()).to.include(pm.environment.get(\"age\"));\r",
+							"});\r",
+							"\r",
+							"var json = pm.response.json();\r",
+							"pm.environment.set(\"id\", json.data.id);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e2026b61-059a-44f6-aefb-5144632c387e",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"{{name}}\",\r\n    \"salary\": \"{{salary}}\",\r\n    \"age\": \"{{age}}\"\r\n}",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{url}}create",
+					"host": [
+						"{{url}}create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Update an employee record",
 			"event": [
 				{
@@ -13,11 +70,12 @@
 					"script": {
 						"id": "031d52e5-707d-45f4-b900-79bc357e7e75",
 						"exec": [
-							"pm.response.headers.all()\r",
-							"    .filter(headerObj => { return headerObj.key == \"Set-Cookie\";})\r",
-							"    .forEach(headerObj => {\r",
-							"        console.log(headerObj.key +\": \"+headerObj.value)\r",
-							"    })"
+							"pm.test(\"Validated data after update\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(pm.environment.get(\"updated_name\"));\r",
+							"    pm.expect(pm.response.text()).to.include(pm.environment.get(\"updated_salary\"));\r",
+							"    pm.expect(pm.response.text()).to.include(pm.environment.get(\"updated_age\"));\r",
+							"});\r",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -29,7 +87,7 @@
 						"exec": [
 							"pm.request.headers.add({\r",
 							"key: 'Cookie',\r",
-							"value: 'PHPSESSID=c7962e05472acf6fd53fd4cae2c25289'\r",
+							"value: pm.environment.get(\"cookie\")\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -37,46 +95,105 @@
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "noauth"
+				},
 				"method": "PUT",
 				"header": [
 					{
 						"key": "PHPSESSID",
-						"value": "c7962e05472acf6fd53fd4cae2c25289",
 						"type": "text",
+						"value": "c7962e05472acf6fd53fd4cae2c25289",
 						"disabled": true
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"{{name}}\",\r\n    \"salary\": \"{{salary}}\",\r\n    \"age\": \"{{age}}\"\r\n}",
+					"raw": "{\r\n    \"name\": \"{{updated_name}}\",\r\n    \"salary\": \"{{updated_salary}}\",\r\n    \"age\": \"{{updated_age}}\"\r\n}",
 					"options": {
 						"raw": {}
 					}
 				},
 				"url": {
-					"raw": "{{url}}update/21",
+					"raw": "{{url}}update/{{id}}",
 					"host": [
 						"{{url}}update"
 					],
 					"path": [
-						"21"
+						"{{id}}"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Get a single employee data",
+			"name": "All employees - check new employee",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b9ec26af-d8d6-4859-b2ea-80c1c8ac6225",
+						"exec": [
+							"var body = JSON.parse(responseBody);\r",
+							"console.log(body.data);\r",
+							"foundEmployee = false;\r",
+							"for (var i = 0; i<body.data.length;i++){    \r",
+							"    if (body.data[i].employee_name == pm.environment.get(\"updated_name\")\r",
+							"        && body.data[i].employee_salary == pm.environment.get(\"updated_salary\")\r",
+							"        && body.data[i].employee_age == pm.environment.get(\"updated_age\")){\r",
+							"        foundEmployee = true\r",
+							"    }\r",
+							"};\r",
+							"\r",
+							"pm.test(\"New employee found in get all employees\", function () {\r",
+							"    pm.expect(foundEmployee).to.be.true;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "f15901e5-f252-4bea-8f10-be22b7fa4b86",
+						"exec": [
+							"pm.request.headers.add({\r",
+							"key: 'Cookie',\r",
+							"value: pm.environment.get(\"cookie\")\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}employees",
+					"host": [
+						"{{url}}employees"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Single employee - check new employee",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"id": "0b8a7166-e255-4804-92ef-96aea5d5d86e",
 						"exec": [
-							"pm.test(\"Successfully validated data after update\", function () {\r",
-							"    pm.expect(pm.response.text()).to.include(pm.environment.get(\"name\"));\r",
-							"    pm.expect(pm.response.text()).to.include(pm.environment.get(\"salary\"));\r",
-							"    pm.expect(pm.response.text()).to.include(pm.environment.get(\"age\"));\r",
+							"pm.test(\"Successfully validated data in GET operations\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(pm.environment.get(\"updated_name\"));\r",
+							"    pm.expect(pm.response.text()).to.include(pm.environment.get(\"updated_age\"));\r",
+							"    pm.expect(pm.response.text()).to.include(pm.environment.get(\"updated_salary\"));\r",
 							"});\r",
 							""
 						],
@@ -90,7 +207,7 @@
 						"exec": [
 							"pm.request.headers.add({\r",
 							"key: 'Cookie',\r",
-							"value: 'PHPSESSID=c7962e05472acf6fd53fd4cae2c25289'\r",
+							"value: pm.environment.get(\"cookie\")\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -98,15 +215,124 @@
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "noauth"
+				},
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{url}}employee/21",
+					"raw": "{{url}}employee/{{id}}",
 					"host": [
 						"{{url}}employee"
 					],
 					"path": [
-						"21"
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete an employee record",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e7cc90a0-80b1-46fa-8973-a29484e47df7",
+						"exec": [
+							"pm.test(\"Delete employee successful response\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"success\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "5408530a-cc31-44fb-806e-901516f334c0",
+						"exec": [
+							"pm.request.headers.add({\r",
+							"key: 'Cookie',\r",
+							"value: pm.environment.get(\"cookie\")\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}delete/{{id}}",
+					"host": [
+						"{{url}}delete"
+					],
+					"path": [
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "All employees - check absense of new employee",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "dfcbb7dc-ed97-44f3-8d0b-05f9dc6bc984",
+						"exec": [
+							"var body = JSON.parse(responseBody);\r",
+							"console.log(body.data);\r",
+							"foundEmployee = false;\r",
+							"for (var i = 0; i<body.data.length;i++){\r",
+							"    //console.log(body.data[i]);\r",
+							"    if (body.data[i].employee_name == pm.environment.get(\"updated_name\")\r",
+							"        && body.data[i].employee_salary == pm.environment.get(\"updated_salary\")\r",
+							"        && body.data[i].employee_age == pm.environment.get(\"updated_age\")){\r",
+							"        foundEmployee = true\r",
+							"        break;\r",
+							"    }\r",
+							"};\r",
+							"\r",
+							"pm.test(\"Deleted employee wasn't found in get all employees\", function () {\r",
+							"    pm.expect(foundEmployee).to.be.false;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "55172679-badd-45ce-9e2e-9b05b71fa417",
+						"exec": [
+							"pm.request.headers.add({\r",
+							"key: 'Cookie',\r",
+							"value: pm.environment.get(\"cookie\")\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}employees",
+					"host": [
+						"{{url}}employees"
 					]
 				}
 			},
