@@ -233,6 +233,53 @@
 			"response": []
 		},
 		{
+			"name": "Single employee - check pre-existing employee",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5b9bfd5a-a0db-4f5c-84a8-6464ed6ec2e6",
+						"exec": [
+							"pm.test(\"Get single employee data success\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"success\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "10207ef0-75db-41c8-b63c-eb050bf0a86d",
+						"exec": [
+							"pm.request.headers.add({\r",
+							"key: 'Cookie',\r",
+							"value: pm.environment.get(\"cookie\")\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}employee/1",
+					"host": [
+						"{{url}}employee"
+					],
+					"path": [
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Delete an employee record",
 			"event": [
 				{
